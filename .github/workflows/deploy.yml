@@ -27,8 +27,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Set up temporary disk space
-        run: df -h && sudo mount -t tmpfs -o size=10G tmpfs /mnt && df -h
-
+        run: df -h && sudo mount -t tmpfs -o size=50G tmpfs /mnt && df -h
 
       - name: 빌드 하고 푸시
         env:
