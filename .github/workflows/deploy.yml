@@ -16,15 +16,16 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: '3.9'
 
       - name: 의존성 설치
         run: |
-          python3 -m venv venv
+          python -m venv venv
           . venv/bin/activate
-          pip3 install -r requirements.txt
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Set up temporary disk space
         run: df -h && sudo mount -t tmpfs -o size=50G tmpfs /mnt && df -h
