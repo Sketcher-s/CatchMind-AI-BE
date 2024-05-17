@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy the requirements.txt file into the container
 COPY requirements.txt requirements.txt
+RUN export TMPDIR='/var/tmp'
 RUN pip3 install -r requirements.txt
 
 COPY . .
