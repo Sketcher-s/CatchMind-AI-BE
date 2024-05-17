@@ -20,6 +20,9 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Clean Docker system
+        run: docker system prune -a -f --volumes
+
       - name: 의존성 설치
         run: |
           python -m venv venv

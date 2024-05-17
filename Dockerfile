@@ -1,17 +1,20 @@
-# Use the official Python image from the Docker Hub
-FROM python:3.9-slim
+# Build stage
+FROM python:3.9-slim AS build
 
-# 현재 디렉토리의 모든 파일들을 컨테이너의 /app 디렉토리에 복사한다.
-COPY . /app
-
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements.txt file into the container
-RUN pip install -r requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 5000 available to the world outside this container
+COPY . .
+
+# Final stage
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
 EXPOSE 5000
 
-# Command to run the application
 CMD ["python", "app.py"]
