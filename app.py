@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 import os
-import torch
 from ultralytics import YOLO
 import requests
 
