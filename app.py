@@ -4,8 +4,6 @@ from ultralytics import YOLO
 import requests
 from PIL import Image
 
-import time
-
 # Flask 애플리케이션 초기화
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -24,7 +22,6 @@ SUCCESS_MESSAGE = 'Prediction sent successfully'
 
 # 상수
 RESULT_TEXT_FILE = 'result.txt'
-
 
 
 @app.route('/predict', methods=['POST'])
@@ -69,7 +66,6 @@ def predict():
 @app.route('/predict-test', methods=['POST'])
 def predict_test():
 
-    start_time = time.time()
     # 요청에서 파일 가져오기
     if 'file' not in request.files:
         return jsonify({'error': ERROR_MESSAGE_NO_FILE}), 400
@@ -86,6 +82,7 @@ def predict_test():
         # 예측 수행
         img = Image.open(file_path)
         results = model.predict(img)  # 이미지 객체를 사용하여 예측
+        os.remove(file_path)
 
         # 결과 처리 및 텍스트 파일로 저장
         result_txt_path = os.path.join(app.config['UPLOAD_FOLDER'], RESULT_TEXT_FILE)
@@ -95,8 +92,7 @@ def predict_test():
         with open(result_txt_path, 'r') as f:
             predictions_txt = f.read().replace('\n', ' ')
 
-            end_time = time.time()
-            print(f"Elapsed time: {end_time - start_time} seconds")
+        os.remove(result_txt_path)
 
         return jsonify({'predictions': predictions_txt})
 
