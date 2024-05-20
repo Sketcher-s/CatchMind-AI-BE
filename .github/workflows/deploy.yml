@@ -61,5 +61,5 @@ jobs:
             sudo docker pull $USER/$APP:latest
             sudo docker stop $APP
             sudo docker rm $APP
-            sudo docker run -d --name $APP -p 8080:8080 $USER/$APP:latest
+            sudo docker run -d --name $APP -p 5000:5000 $USER/$APP:latest
             sudo docker container prune -f
