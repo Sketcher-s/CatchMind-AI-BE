@@ -51,14 +51,7 @@ def predict():
         with open(result_txt_path, 'r') as f:
             predictions_txt = f.read().replace('\n', ' ')
 
-        # 스프링 서버로 예측 결과 전송
-        spring_server_url = 'https://' + DEV_SERVER_URL + '/predict'
-        response = requests.post(spring_server_url, json={'predictions': predictions_txt})
-
-        if response.status_code == 200:
-            return jsonify({'message': SUCCESS_MESSAGE, 'predictions': predictions_txt})
-        else:
-            return jsonify({'error': 'Failed to send prediction to Spring server'}), 500
+        return predictions_txt
 
     return jsonify({'error': ERROR_MESSAGE_FILE_UPLOAD_FAILED}), 500
 
@@ -87,6 +80,7 @@ def predict_test():
         # 결과 처리 및 텍스트 파일로 저장
         result_txt_path = os.path.join(app.config['UPLOAD_FOLDER'], RESULT_TEXT_FILE)
         results[0].save_txt(result_txt_path)  # 첫 번째 결과를 텍스트 파일로 저장
+        results[0].save(filename='result.jpg')
 
         # 텍스트 파일의 내용을 String으로 변환하고 \n을 공백으로 바꿈
         with open(result_txt_path, 'r') as f:
