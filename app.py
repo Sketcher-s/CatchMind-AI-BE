@@ -43,6 +43,10 @@ def predict():
         results = model.predict(img)  # 이미지 객체를 사용하여 예측
         os.remove(file_path)
 
+        # 결과가 없을 경우 빈 문자열 반환
+        if len(results) == 0 or len(results[0].boxes) == 0:
+            return " "
+
         # 결과 처리 및 텍스트 파일로 저장
         result_txt_path = os.path.join(app.config['UPLOAD_FOLDER'], RESULT_TEXT_FILE)
         results[0].save_txt(result_txt_path)  # 첫 번째 결과를 텍스트 파일로 저장
@@ -79,6 +83,10 @@ def predict_test():
         img = Image.open(file_path)
         results = model.predict(img)  # 이미지 객체를 사용하여 예측
         os.remove(file_path)
+
+        # 결과가 없을 경우 빈 문자열 반환
+        if len(results) == 0 or len(results[0].boxes) == 0:
+            return " "
 
         # 결과 처리 및 텍스트 파일로 저장
         result_txt_path = os.path.join(app.config['UPLOAD_FOLDER'], RESULT_TEXT_FILE)
