@@ -2,9 +2,11 @@ from flask import Flask, request, jsonify
 import os
 from ultralytics import YOLO
 from PIL import Image
+from flask_cors import CORS
 
 # Flask 애플리케이션 초기화
 app = Flask(__name__)
+CORS(app)
 UPLOAD_FOLDER = 'uploads'
 DEV_SERVER_URL = 'dev.catchmind.shop'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -21,6 +23,7 @@ SUCCESS_MESSAGE = 'Prediction sent successfully'
 
 # 상수
 RESULT_TEXT_FILE = 'result.txt'
+CONFIDENCE_THRESHOLD = 0.0  # 신뢰도 임계값
 
 
 @app.route('/predict', methods=['POST'])
@@ -43,12 +46,16 @@ def predict():
         results = model.predict(img)  # 이미지 객체를 사용하여 예측
         os.remove(file_path)
 
+        # 신뢰도 필터링
+        filtered_boxes = [box for box in results[0].boxes if box.conf >= CONFIDENCE_THRESHOLD]
+
         # 결과가 없을 경우 빈 문자열 반환
-        if len(results) == 0 or len(results[0].boxes) == 0:
+        if len(filtered_boxes) == 0:
             return " "
 
         # 결과 처리 및 텍스트 파일로 저장
         result_txt_path = os.path.join(app.config['UPLOAD_FOLDER'], RESULT_TEXT_FILE)
+        results[0].boxes = filtered_boxes  # 필터링된 박스로 결과 업데이트
         results[0].save_txt(result_txt_path)  # 첫 번째 결과를 텍스트 파일로 저장
         results[0].save(filename='result.jpg')
 
